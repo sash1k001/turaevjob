@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  passwordHash String
+  role String
+
+  resume Resume?
+  vacancies Vacancy[]
+  chats Chat[] @relation("UserChats")
+  messages Message[]
+}
+
+model Resume {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id])
+  title String
+  description String
+  skills String
+  salary Int?
+}
+
+model Vacancy {
+  id Int @id @default(autoincrement())
+  userId Int 
+  user User @relation(fields: [userId], references: [id])
+  title String
+  description String
+  salaryFrom Int?
+  salaryTo Int?
+  isActive Boolean @default(true)
+}
+
+model Chat {
+  id Int @id @default(autoincrement())
+  users User[] @relation("UserChats")
+  messages Message[]
+  vacancyId Int?
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+  chatId Int
+  chat Chat @relation(fields: [chatId], references: [id])
+  senderId Int
+  sender User @relation(fields: [senderId], references: [id])
+  content String
+  createdAt DateTime @default(now())
+}
