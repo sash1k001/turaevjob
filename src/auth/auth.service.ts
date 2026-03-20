@@ -32,7 +32,7 @@ export class AuthService {
             },
         });
 
-        return this.generateToken(user.id, user.email, user.role);
+        return this.generateToken(user.id, user.name, user.email, user.role);
     }
 
     async login(dto: LoginDto) {
@@ -50,11 +50,11 @@ export class AuthService {
             throw new UnauthorizedException('неверный email или пароль');
         }
 
-        return this.generateToken(user.id, user.email, user.role);
+        return this.generateToken(user.id, user.name, user.email, user.role);
     }
 
-    private generateToken(userId: number, email: string, role: string) {
-        const payload = { sub: userId, email, role };
+    private generateToken(userId: number, name: string, email: string, role: string) {
+        const payload = { sub: userId, email, name, role };
 
         return {
             access_token: this.jwtService.sign(payload)
