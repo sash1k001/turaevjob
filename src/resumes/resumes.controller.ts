@@ -1,37 +1,37 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard.js";
 import { RolesGuard } from "../auth/guards/roles.guard.js";
-import { VacanciesService } from "./vacancies.service.js";
+import { ResumesService } from "./resumes.service.js";
 import { Roles } from "../auth/decorators/roles.decorator.js";
 import { Role } from "../auth/enums/role.enum.js";
-import { CreateVacancyDto } from "./dto/create-vacancy.dto.js";
+import { CreateResumeDto } from "./dto/create-resume.dto.js";
 import { CurrentUser } from "../auth/decorators/current-user.decorator.js";
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('vacancies')
-export class VacanciesController {
+@Controller('resumes')
+export class ResumesController {
     constructor(
-        private readonly vacanciesService: VacanciesService,
+        private readonly resumesService: ResumesService,
     ) {}
 
-    @Roles(Role.EMPLOYER)
+    @Roles(Role.SEEKER)
     @Post()
     create(
-        @Body() dto: CreateVacancyDto,
+        @Body() dto: CreateResumeDto,
         @CurrentUser() user: any,
     ) {
-        return this.vacanciesService.create(user.id, dto);
+        return this.resumesService.create(user.id, dto);
     }
 
-    @Roles(Role.SEEKER, Role.EMPLOYER)
+    @Roles(Role.EMPLOYER, Role.SEEKER)
     @Get()
     findAll() {
-        return this.vacanciesService.findAll();
+        return this.resumesService.findAll();
     }
 
-    @Roles(Role.SEEKER, Role.EMPLOYER)
+    @Roles(Role.EMPLOYER, Role.SEEKER)
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number) {
-        return this.vacanciesService.findOne(id);
+        return this.resumesService.findOne(id);
     }
 }
