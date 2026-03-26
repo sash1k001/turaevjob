@@ -68,7 +68,7 @@ export class ChatsService {
     async checkChatAccess(chatId: number, userId: number) {
         const chat = await this.prismaService.chat.findUnique({
             where: {
-                id: userId,
+                id: chatId,
             },
             include: {
                 users: {
